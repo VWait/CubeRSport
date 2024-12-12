@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование турнира</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .challenge {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+        .challenge.collapsed {
+            cursor: pointer;
+            padding: 10px;
+            text-align: left;
+        }
+        .challenge.collapsed:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .challenge.collapsed .form-group:not(:first-child),
+        .challenge.collapsed .btn {
+            display: none;
+        }
+        .criteria-display {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .criteria-display span {
+            margin-right: 10px;
+        }
+        .criteria-display button {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .add-criteria-dotted {
+            border: 1px dashed #ccc;
+            border-radius: 10px;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            color: #007bff;
+            background-color: #fff;
+            transition: background-color 0.2s;
+            width: fit-content;
+        }
+        .add-criteria-dotted:hover {
+            background-color: #e9ecef;
+        }
+        .criteria-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .criteria-inputs input {
+            max-width: 200px;
+        }
+        .criteria-inputs button {
+            flex-shrink: 0;
+        }
+        #add-challenge {
+            width: 100%;
+            background-color: #f9f9f9;
+            color: #007bff;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+        #add-challenge:hover {
+            background-color: #e9ecef;
+            box-shadow: 
+            0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body style="margin: 20px;">
+    <div class="container">
+        <h1>Редактирование турнира</h1>
+        <div id="challenges-container">
+            <div class="challenge">
+                <div class="form-group">
+                    <h2 class="challenge-title">Испытание</h2>
+                </div>
+                <div class="form-group">
+                    <label for="challengeName">Название</label>
+                    <input type="text" class="form-control" placeholder="Введите название испытания">
+                </div>
+                <div class="form-group">
+                    <label for="challengeDescription">Описание</label>
+                    <textarea class="form-control" rows="2" placeholder="Введите описание"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Критерии</label>
+                    <div class="criteria-list"></div>
+                    <div class="add-criteria-dotted">+ Добавить критерий</div>
+                    <div class="criteria-inputs" style="display: none;">
+                        <input type="text" class="form-control" placeholder="Наименование">
+                        <input type="number" class="form-control" placeholder="Макс. оценка">
+                        <button type="button" class="btn btn-danger btn-sm cancel-criteria"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                          </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm confirm-criteria">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                              </svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary save-challenge">Сохранить испытание</button>
+                <button type="button" class="btn btn-danger remove-challenge">Удалить испытание</button>
+            </div>
+        </div>
+        <button type="button" class="btn" id="add-challenge">Добавить испытание +</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const challengesContainer = document.getElementById('challenges-container');
+            const addChallengeButton = document.getElementById('add-challenge');
+
+            addChallengeButton.addEventListener('click', function () {
+                const challenge = document.createElement('div');
+                challenge.className = 'challenge';
+                challenge.innerHTML = `
+                    <div class="form-group">
+                        <h2 class="challenge-title">Испытание</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="challengeName">Название</label>
+                        <input type="text" class="form-control" placeholder="Введите название испытания">
+                    </div>
+                    <div class="form-group">
+                        <label for="challengeDescription">Описание</label>
+                        <textarea class="form-control" rows="2" placeholder="Введите описание"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Критерии</label>
+                        <div class="criteria-list"></div>
+                        <div class="add-criteria-dotted">+ Добавить критерий</div>
+                        <div class="criteria-inputs" style="display: none;">
+                            <input type="text" class="form-control" placeholder="Наименование">
+                            <input type="number" class="form-control" placeholder="Макс. оценка">
+                            <button type="button" class="btn btn-danger btn-sm cancel-criteria">X</button>
+                            <button type="button" class="btn btn-primary btn-sm confirm-criteria">✔</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary save-challenge">Сохранить испытание</button>
+                    <button type="button" class="btn btn-danger remove-challenge">Удалить испытание</button>
+                `;
+
+                challengesContainer.appendChild(challenge);
+
+                addChallengeEventListeners(challenge);
+            });
+
+            function addChallengeEventListeners(challenge) {
+                const removeChallengeButton = challenge.querySelector('.remove-challenge');
+                const saveChallengeButton = challenge.querySelector('.save-challenge');
+                const addCriteriaButton = challenge.querySelector('.add-criteria-dotted');
+                const criteriaInputs = challenge.querySelector('.criteria-inputs');
+                const criteriaList = challenge.querySelector('.criteria-list');
+                const confirmCriteriaButton = challenge.querySelector('.confirm-criteria');
+                const cancelCriteriaButton = challenge.querySelector('.cancel-criteria');
+                const challengeTitle = challenge.querySelector('.challenge-title');
+                const challengeNameInput = challenge.querySelector('input[placeholder="Введите название испытания"]');
+
+                challenge.addEventListener('click', function (e) {
+                    if (challenge.classList.contains('collapsed') && e.target === challenge) {
+                        challenge.classList.remove('collapsed');
+                    }
+                });
+
+                removeChallengeButton.addEventListener('click', function () {
+                    challenge.remove();
+                });
+
+                saveChallengeButton.addEventListener('click', function () {
+                    const challengeName = challengeNameInput.value.trim();
+                    challengeTitle.textContent = challengeName || 'Испытание';
+                    challenge.classList.add('collapsed');
+                });
+
+                addCriteriaButton.addEventListener('click', function () {
+                    criteriaInputs.style.display = 'flex';
+                });
+
+                cancelCriteriaButton.addEventListener('click', function () {
+                    criteriaInputs.style.display = 'none';
+                    criteriaInputs.querySelectorAll('input').forEach(input => input.value = '');
+                });
+
+                confirmCriteriaButton.addEventListener('click', function () {
+                    const nameInput = criteriaInputs.querySelector('input[placeholder="Наименование"]');
+                    const maxInput = criteriaInputs.querySelector('input[placeholder="Макс. оценка"]');
+
+                    if (nameInput.value && maxInput.value) {
+                        const criteriaDisplay = document.createElement('div');
+                        criteriaDisplay.className = 'criteria-display';
+                        criteriaDisplay.innerHTML = `
+                            <span>${nameInput.value} 0/${maxInput.value}</span>
+                            <button>&times;</button>
+                        `;
+
+                        const removeButton = criteriaDisplay.querySelector('button');
+                        removeButton.addEventListener('click', function () {
+                            criteriaDisplay.remove();
+                        });
+
+                        criteriaList.appendChild(criteriaDisplay);
+
+                        criteriaInputs.style.display = 'none';
+                        nameInput.value = '';
+                        maxInput.value = '';
+                    } else {
+                        alert('Введите корректные данные для критерия.');
+                    }
+                });
+            }
+
+            const initialChallenges = challengesContainer.querySelectorAll('.challenge');
+            initialChallenges.forEach(addChallengeEventListeners);
+        });
+    </script>
+</body>
+</html>
