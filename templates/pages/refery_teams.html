@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Судейство турнира - Команды</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table-container {
+            margin-top: 20px;
+        }
+        .total-score {
+            font-weight: bold;
+            text-align: center;
+        }
+        .arrow-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="table-container">
+            <label for="teamFilter" class="form-label">Выберите команду:</label>
+            <select id="teamFilter" class="form-select mb-3">
+                <option value="1">Команда 1</option>
+                <option value="2">Команда 2</option>
+                <option value="3">Команда 3</option>
+            </select>
+            <div class="arrow-buttons">
+                <button type="button" class="btn btn-outline-secondary" id="prevChallenge">&#8592; Предыдущее испытание</button>
+                <button type="button" class="btn btn-outline-secondary" id="nextChallenge">Следующее испытание &#8594;</button>
+            </div>
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Название испытания</th>
+                        <th>Критерий 1 (0/20)</th>
+                        <th>Критерий 2 (0/15)</th>
+                        <th>Критерий 3 (0/10)</th>
+                        <th>Общий балл</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="currentChallenge">Испытание 1</td>
+                        <td><input type="number" class="form-control team-score" data-criterion="1" value="0" max="20"></td>
+                        <td><input type="number" class="form-control team-score" data-criterion="2" value="0" max="15"></td>
+                        <td><input type="number" class="form-control team-score" data-criterion="3" value="0" max="10"></td>
+                        <td class="total-team-score" id="team-total-score">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-end">
+                <button type="button" class="btn btn-primary mt-3">Сохранить результаты</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const challenges = ["Испытание 1", "Испытание 2", "Испытание 3"];
+            let currentChallengeIndex = 0;
+
+            const currentChallengeElement = document.getElementById('currentChallenge');
+            const prevChallengeButton = document.getElementById('prevChallenge');
+            const nextChallengeButton = document.getElementById('nextChallenge');
+            const teamScores = document.querySelectorAll('.team-score');
+            const totalTeamScore = document.getElementById('team-total-score');
+
+            function updateChallenge() {
+                currentChallengeElement.textContent = challenges[currentChallengeIndex];
+                calculateTotalTeamScore();
+            }
+
+            function calculateTotalTeamScore() {
+                let total = 0;
+                teamScores.forEach(scoreInput => {
+                    total += parseFloat(scoreInput.value) || 0;
+                });
+                totalTeamScore.textContent = total;
+            }
+
+            teamScores.forEach(input => {
+                input.addEventListener('input', calculateTotalTeamScore);
+            });
+
+            prevChallengeButton.addEventListener('click', function () {
+                if (currentChallengeIndex > 0) {
+                    currentChallengeIndex--;
+                    updateChallenge();
+                }
+            });
+
+            nextChallengeButton.addEventListener('click', function () {
+                if (currentChallengeIndex < challenges.length - 1) {
+                    currentChallengeIndex++;
+                    updateChallenge();
+                }
+            });
+
+            updateChallenge();
+        });
+    </script>
+</body>
+</html>
